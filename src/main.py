@@ -9,6 +9,15 @@ import board
 import adafruit_mcp3xxx.mcp3008 as MCP
 from adafruit_mcp3xxx.analog_in import AnalogIn
 
+
+import socket
+TCP_IP = '192.168.0.116'
+TCP_PORT = 5005
+BUFFER_SIZE = 1024
+MESSAGE = "Hello, World!"
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((TCP_IP, TCP_PORT))
+
 # SETUP
 # create the spi bus
 spi = busio.SPI(clock=board.SCK, MISO=board.MISO, MOSI=board.MOSI)
@@ -76,5 +85,4 @@ if __name__ == "__main__":
 
     while True:
         if button.value == False:
-            time.sleep(0.25)  # software debounce
-            print("Changing intervals to: " + str(cycle()) + "s")
+            s.send(MESSAGE)
