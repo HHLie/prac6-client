@@ -12,7 +12,7 @@ from adafruit_mcp3xxx.analog_in import AnalogIn
 
 import socket
 TCP_IP = '192.168.0.116'
-TCP_PORT = 5005
+TCP_PORT = 50
 BUFFER_SIZE = 1024
 MESSAGE = "Hello, World!"
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -85,4 +85,4 @@ if __name__ == "__main__":
 
     while True:
         if button.value == False:
-            s.send(MESSAGE)
+            s.send('a')
