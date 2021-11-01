@@ -6,6 +6,7 @@ import digitalio
 import board
 import adafruit_mcp3xxx.mcp3008 as MCP
 from adafruit_mcp3xxx.analog_in import AnalogIn
+from datetime import datetime
 
 ################TCP SEND SETUP###########################
 
@@ -19,6 +20,7 @@ BUFFER_SIZE = 1024
 MESSAGE = "Hello, World!"
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((TCP_IP, TCP_PORT))
+
 
 ##################ADC Setup##############################
 
@@ -54,14 +56,18 @@ print("Sensor Node it awake\n")     #Print statements to see what's happening in
 #f.write("Sensor Node it awake\n")   #Write to file statements to see what's happening if you ssh into the device and open the file locally using nano
 #f.flush()
 s.send(b'Sensor Node it awake\n')   #send to transmit an obvious message to show up in the balena logs of the server pi
-
 while(True):
     #TODO add code to read the ADC values and print them, write them, and send them
-    data_str = (str(round(time.time() - starttime)) + "s").ljust(9, ' ')
-    data_str = data_str + str(ADC.value).ljust(14, ' ')
-    data_str = data_str + (str(ConvertTemp(ADC.voltage)) + "C").ljust(9, ' ')
-    data_str = data_str + str(LDR.value)
-    print(data_str)
+    sensor_ONOFF = True
+    if sensor_ONOFF == True:
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+        data_str = (str(current_time)).ljust(12, ' ')
+        data_str = data_str + str(ADC.value).ljust(10, ' ')
+        data_str = data_str + (str(ConvertTemp(ADC.voltage)) + "C").ljust(9, ' ')
+        data_str = data_str + str(LDR.value)
+        print(data_str)
+
 
 
 
