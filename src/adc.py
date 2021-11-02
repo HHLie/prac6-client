@@ -21,7 +21,10 @@ MESSAGE = "Hello, World!"
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((TCP_IP, TCP_PORT))
 
-
+#jank coding the re-edition
+web_s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+web_s.connect(('192.168.0.116', 5050))
+web_s.settimeout(0.000001)
 ##################ADC Setup##############################
 
 #TODO using the adafruit circuit python SPI and MCP libraries setup the ADC interface
@@ -55,10 +58,25 @@ def ConvertTemp(data):
 print("Sensor Node it awake\n")     #Print statements to see what's happening in balena logs
 #f.write("Sensor Node it awake\n")   #Write to file statements to see what's happening if you ssh into the device and open the file locally using nano
 #f.flush()
+#web_s.send(b'Sensor Node it awake\n')
 s.send(b'Sensor Node it awake\n')   #send to transmit an obvious message to show up in the balena logs of the server pi
+sensor_ONOFF = True
 while(True):
     #TODO add code to read the ADC values and print them, write them, and send them
-    sensor_ONOFF = True
+    func_data = '0'
+    try:
+        func_data = web_s.recv(20).decode()
+    except socket.timeout as e:
+        pass
+    if func_data == '1':
+        sensor_ONOFF = True
+    elif func_data == '2':
+        sensor_ONOFF = False
+    elif func_data == '3':
+        web_s.send(str(sensor_ONOFF).encode())
+    elif func_data == '5':
+        sensor_ONOFF = not sensor_ONOFF
+        print(sensor_ONOFF)
     if sensor_ONOFF == True:
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
@@ -67,10 +85,5 @@ while(True):
         data_str = data_str + (str(ConvertTemp(ADC.voltage)) + "C").ljust(9, ' ')
         data_str = data_str + str(LDR.value)
         print(data_str)
-
-
-
-
-
-
-    time.sleep(10)
+        s.send(data_str.encode())
+        time.sleep(9.9)
