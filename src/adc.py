@@ -14,14 +14,16 @@ from datetime import datetime
     #Test this locally before trying to deploy via balena using test messages instead of ADC values
     #Use localmode when deploying to balena and use the advertised local address (using public IPs is possible but more complicated to configure due to the security measures BalenaOS imposes by default.  These are a good thing for real world deployment but over complicate the prac for the immediate purposes
 import socket
+
+#the tcp setup for the TCP server
+
 TCP_IP = '192.168.0.116'
 TCP_PORT = 5003
 BUFFER_SIZE = 1024
-MESSAGE = "Hello, World!"
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((TCP_IP, TCP_PORT))
 
-#jank coding the re-edition
+#the tcp setup for the webserver
 web_s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 web_s.connect(('192.168.0.116', 5050))
 web_s.settimeout(0.000001)
@@ -44,11 +46,6 @@ ADC = AnalogIn(mcp, MCP.P1)
 # create an analog input channel on pin 1
 LDR = AnalogIn(mcp, MCP.P2)
 
-# set up button
-button = digitalio.DigitalInOut(board.D26)
-button.direction = digitalio.Direction.INPUT
-button.pull = digitalio.Pull.UP
-
 def ConvertTemp(data):
     temp = data - 0.5
     temp = temp / 0.01
@@ -58,7 +55,6 @@ def ConvertTemp(data):
 print("Sensor Node it awake\n")     #Print statements to see what's happening in balena logs
 #f.write("Sensor Node it awake\n")   #Write to file statements to see what's happening if you ssh into the device and open the file locally using nano
 #f.flush()
-#web_s.send(b'Sensor Node it awake\n')
 s.send(b'Sensor Node it awake\n')   #send to transmit an obvious message to show up in the balena logs of the server pi
 sensor_ONOFF = True
 while(True):
