@@ -21,12 +21,24 @@ TCP_IP = '192.168.0.116'
 TCP_PORT = 5003
 BUFFER_SIZE = 1024
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect((TCP_IP, TCP_PORT))
 
 #the tcp setup for the webserver
 web_s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-web_s.connect(('192.168.0.116', 5050))
 web_s.settimeout(0.000001)
+
+#####
+#connect to servers
+connected = False
+while not connected:
+    try:
+        print("attempting to connect to web server")
+        web_s.connect(('192.168.0.116', 5050))
+        print("attempting to connect to tcp server")
+        s.connect((TCP_IP, TCP_PORT))
+        connected = True
+    except Exception as e:
+        time.sleep(5)
+        pass
 ##################ADC Setup##############################
 
 #TODO using the adafruit circuit python SPI and MCP libraries setup the ADC interface
@@ -56,6 +68,8 @@ print("Sensor Node it awake\n")     #Print statements to see what's happening in
 #f.write("Sensor Node it awake\n")   #Write to file statements to see what's happening if you ssh into the device and open the file locally using nano
 #f.flush()
 s.send(b'Sensor Node it awake\n')   #send to transmit an obvious message to show up in the balena logs of the server pi
+
+
 sensor_ONOFF = True
 while(True):
     #TODO add code to read the ADC values and print them, write them, and send them
