@@ -78,15 +78,20 @@ while(True):
         func_data = web_s.recv(20).decode()
     except socket.timeout as e:
         pass
+    # sensor on
     if func_data == '1':
         sensor_ONOFF = True
+    # sensor off
     elif func_data == '2':
         sensor_ONOFF = False
+    # check sensor
     elif func_data == '3':
         web_s.send(str(sensor_ONOFF).encode())
+    # testing function, not needed
     elif func_data == '5':
         sensor_ONOFF = not sensor_ONOFF
         print(sensor_ONOFF)
+    # if sensor is on send data
     if sensor_ONOFF == True:
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
