@@ -1,8 +1,16 @@
 # Prac 6 EEE3095S
-## Client code ##
+## Sensor Node ##
 LXXHSI007 & VBNREE001
 
 This is the code for our client side Pi
+
+## Scripts ##
+### adc.py ###
+This script connects to the Server node, through 2 TCP connections with the tcp_server.py and webserver.py.
+The Pi will be connected to a breadboard with a temperature and light sensor. (Unchanged circuit board from Prac 4)
+Data will be read from the ADC, converted, and formatted. The formatted data will be printed to the console and sent to tcp_server.py.
+With the connection with the webserver, the node is able to receive commands such as Sensor On, Sensor Off and a Status check.
+
 
 ## Here are some screenshots of the logs from Balena: ##
 Server Pi:
