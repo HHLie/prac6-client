@@ -68,7 +68,7 @@ def ConvertTemp(data):
 print("Sensor Node it awake\n")     #Print statements to see what's happening in balena logs
 s.send(b'Sensor Node it awake\n')   #send to transmit an obvious message to show up in the balena logs of the server pi
 
-
+#sensor variable to toggle True for on and False for off 
 sensor_ONOFF = True
 
 #thread that prints and sends readings from ADC
