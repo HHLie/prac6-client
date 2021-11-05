@@ -66,17 +66,15 @@ def ConvertTemp(data):
 #########################################################
 
 print("Sensor Node it awake\n")     #Print statements to see what's happening in balena logs
-#f.write("Sensor Node it awake\n")   #Write to file statements to see what's happening if you ssh into the device and open the file locally using nano
-#f.flush()
 s.send(b'Sensor Node it awake\n')   #send to transmit an obvious message to show up in the balena logs of the server pi
 
 
 sensor_ONOFF = True
 
-
-def print_time_thread(): #thread that prints readings from ADC
+#thread that prints and sends readings from ADC
+def print_time_thread():
   global ADC,LDR,sensor_ONOFF,s
-  thread = threading.Timer(10, print_time_thread)
+  thread = threading.Timer(10, print_time_thread) # create timed thread
   thread.daemon = True  # Daemon threads exit when the program does
   thread.start() # start thread
   # if sensor is on send data
@@ -93,10 +91,12 @@ def print_time_thread(): #thread that prints readings from ADC
 print_time_thread()
 
 while(True):
-    #TODO add code to read the ADC values and print them, write them, and send them
+    #while loop to handle commands received
     func_data = '0'
+    #try receive a message
     try:
         func_data = web_s.recv(20).decode()
+    #pass if no message is received
     except socket.timeout as e:
         pass
     # sensor on
