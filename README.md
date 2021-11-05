@@ -6,7 +6,7 @@ This is the code for our client side Pi
 The ADC data reading is heavily adapted from practtcal 4, as per instructions.  
 ## Scripts ##
 ### adc.py ###
-This script connects to the Server node, through 2 TCP connections with the tcp_server.py and webserver.py.  
+This script connects the Sensor node to the Server node, through 2 TCP connections with the tcp_server.py and webserver.py.  
 The Pi will be connected to a breadboard with a temperature and light sensor. (Unchanged circuit board from Prac 4).  
 With the use of timed threads, every 10 seconds data will be read from the ADC, converted, and formatted. The formatted data will be printed to the console and sent to tcp_server.py.  
 With the connection with the webserver, the node is able to receive commands such as Sensor On, Sensor Off and a Status check.
