@@ -1,6 +1,7 @@
 import socket
 import sys
 import time
+import threading
 import busio
 import digitalio
 import board
@@ -71,6 +72,26 @@ s.send(b'Sensor Node it awake\n')   #send to transmit an obvious message to show
 
 
 sensor_ONOFF = True
+
+
+def print_time_thread(): #thread that prints readings from ADC
+  global ADC,LDR,sensor_ONOFF,s
+  thread = threading.Timer(10, print_time_thread)
+  thread.daemon = True  # Daemon threads exit when the program does
+  thread.start() # start thread
+  # if sensor is on send data
+  if sensor_ONOFF == True:
+      now = datetime.now()
+      current_time = now.strftime("%H:%M:%S")
+      data_str = (str(current_time)).ljust(12, ' ')
+      data_str = data_str + str(ADC.value).ljust(10, ' ')
+      data_str = data_str + (str(ConvertTemp(ADC.voltage)) + "C").ljust(9, ' ')
+      data_str = data_str + str(LDR.value)
+      print(data_str)
+      s.send(data_str.encode())
+
+print_time_thread()
+
 while(True):
     #TODO add code to read the ADC values and print them, write them, and send them
     func_data = '0'
@@ -87,18 +108,3 @@ while(True):
     # check sensor
     elif func_data == '3':
         web_s.send(str(sensor_ONOFF).encode())
-    # testing function, not needed
-    elif func_data == '5':
-        sensor_ONOFF = not sensor_ONOFF
-        print(sensor_ONOFF)
-    # if sensor is on send data
-    if sensor_ONOFF == True:
-        now = datetime.now()
-        current_time = now.strftime("%H:%M:%S")
-        data_str = (str(current_time)).ljust(12, ' ')
-        data_str = data_str + str(ADC.value).ljust(10, ' ')
-        data_str = data_str + (str(ConvertTemp(ADC.voltage)) + "C").ljust(9, ' ')
-        data_str = data_str + str(LDR.value)
-        print(data_str)
-        s.send(data_str.encode())
-        time.sleep(9.9)
