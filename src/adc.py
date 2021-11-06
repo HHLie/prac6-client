@@ -88,7 +88,7 @@ def print_time_thread():
       print(data_str)
       s.send(data_str.encode())
 
-#call thread function
+#call thread function 
 print_time_thread()
 
 while(True):
